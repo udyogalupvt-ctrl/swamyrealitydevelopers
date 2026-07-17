@@ -5,7 +5,7 @@ export const SITE_URL =
   (typeof import.meta !== "undefined" &&
     (import.meta as unknown as { env?: Record<string, string | undefined> }).env
       ?.VITE_SITE_URL) ||
-  "https://swamyrealitydevelopers.com";
+  "https://swamyrealitydevelopers.vercel.app";
 
 export const SITE_NAME = "Swamy Reality Developers";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/logo.png`;
