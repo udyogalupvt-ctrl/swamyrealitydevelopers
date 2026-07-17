@@ -37,13 +37,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         // Auto-assign admin role to the specific email
         if (!admin && u.email === "swamyrealitykkd@gmail.com") {
+          admin = true;
           try {
             const { setDoc, doc } = await import("firebase/firestore");
             await setDoc(doc(db, "admins", u.uid), {
               email: u.email,
               createdAt: new Date(),
             });
-            admin = true;
           } catch (e) {
             console.error("Failed to auto-assign admin role:", e);
           }
@@ -73,13 +73,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Auto-assign admin role to the specific email
     if (!admin && cred.user.email === "swamyrealitykkd@gmail.com") {
+      admin = true;
       try {
         const { setDoc, doc } = await import("firebase/firestore");
         await setDoc(doc(db, "admins", cred.user.uid), {
           email: cred.user.email,
           createdAt: new Date(),
         });
-        admin = true;
       } catch (e) {
         console.error("Failed to auto-assign admin role:", e);
       }
