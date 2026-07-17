@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import logoDarkBg from "../assets/swamy-logo-dark.png.asset.json";
-import logoLightBg from "../assets/swamy-logo-light.png.asset.json";
+import logoDarkBg from "../assets/dark_theme_logo.png";
+import logoLightBg from "../assets/light_theme_logo.png";
 import { Reveal, WordReveal, LettersReveal, Magnetic, useLenis } from "../components/motion";
 import { FAQ } from "../components/FAQ";
 import { FloatingActions } from "../components/FloatingActions";
@@ -207,7 +207,7 @@ function Header({ dark, toggle }: { dark: boolean; toggle: () => void }) {
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4 lg:px-10 lg:py-5">
         <a href="#" className="flex items-center gap-3">
           <img
-            src={scrolled && !dark ? logoLightBg.url : logoDarkBg.url}
+            src={scrolled && !dark ? logoLightBg : logoDarkBg}
             alt="Swamy Reality Developers"
             className={`w-auto transition-all duration-300 ${scrolled ? "h-9 md:h-10 lg:h-11" : "h-12 md:h-14 lg:h-16"}`}
           />

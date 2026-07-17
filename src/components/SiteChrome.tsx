@@ -1,8 +1,8 @@
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import logoDarkBg from "../assets/swamy-logo-dark.png.asset.json";
-import logoLightBg from "../assets/swamy-logo-light.png.asset.json";
+import logoDarkBg from "../assets/dark_theme_logo.png";
+import logoLightBg from "../assets/light_theme_logo.png";
 
 export function useDarkMode() {
   const [dark, setDark] = useState(false);
@@ -72,7 +72,7 @@ export function SiteHeader({
     };
   }, [open]);
 
-  const logoSrc = scrolled && !dark ? logoLightBg.url : logoDarkBg.url;
+  const logoSrc = scrolled && !dark ? logoLightBg : logoDarkBg;
 
   return (
     <>
@@ -220,7 +220,7 @@ function MobileDrawer({
           >
             <div className={`flex items-center justify-between px-6 py-5 border-b ${dark ? "border-white/10" : "border-black/10"}`}>
               <Link to="/" onClick={onClose} className="flex items-center">
-                <img src={dark ? logoDarkBg.url : logoLightBg.url} alt="Swamy Reality Developers" className="h-10 w-auto" />
+                <img src={dark ? logoDarkBg : logoLightBg} alt="Swamy Reality Developers" className="h-10 w-auto" />
               </Link>
               <button
                 onClick={onClose}
@@ -301,7 +301,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-[1280px] px-6 py-16 lg:px-10 lg:py-24">
         <div className="grid gap-12 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <img src={logoDarkBg.url} alt="Swamy Reality Developers" className="h-12 w-auto" />
+            <img src={logoDarkBg} alt="Swamy Reality Developers" className="h-12 w-auto" />
             <p className="mt-6 max-w-xs text-[14px] leading-[1.7] text-white/60">
               Building Homes. Creating Futures. Kakinada's trusted name in premium plots,
               apartments and gated communities for over fifteen years.
@@ -390,7 +390,7 @@ export function Preloader() {
   }, []);
   if (gone) return null;
   const bg = isDark ? "#0B1523" : "#ffffff";
-  const logoSrc = isDark ? logoDarkBg.url : logoLightBg.url;
+  const logoSrc = isDark ? logoDarkBg : logoLightBg;
   const trackBg = isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.10)";
   const fillBg = isDark ? "#7fa8d6" : "#1E3A5F";
   const pctColor = isDark ? "rgba(255,255,255,0.55)" : "rgba(16,20,24,0.55)";
@@ -467,7 +467,7 @@ export function RouteTransition() {
   }, [isLoading]);
 
   const bg = isDark ? "#0B1523" : "#ffffff";
-  const logoSrc = isDark ? logoDarkBg.url : logoLightBg.url;
+  const logoSrc = isDark ? logoDarkBg : logoLightBg;
   const barBg = isDark ? "rgba(255,255,255,0.14)" : "rgba(0,0,0,0.08)";
   const fill = isDark ? "#7fa8d6" : "#1E3A5F";
 
