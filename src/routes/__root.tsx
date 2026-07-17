@@ -13,7 +13,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth-context";
-import { SITE_URL, SITE_NAME, ldScript, organizationLd, localBusinessLd } from "../lib/seo";
+import { SITE_URL, SITE_NAME, ldScript, organizationLd, localBusinessLd, DEFAULT_OG_IMAGE } from "../lib/seo";
 import { useFirestoreRealtime } from "../lib/firestore/realtime";
 import { RouteTransition, BackToTop } from "../components/SiteChrome";
 
@@ -103,8 +103,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "Best Real Estate Company in Kakinada | Swamy Reality Developers" },
       { property: "og:description", content: "Buy RERA & KAUDA approved plots, apartments and gated communities in Kakinada with Swamy Reality Developers — 15+ years of trusted real estate." },
       { name: "twitter:description", content: "Buy RERA & KAUDA approved plots, apartments and gated communities in Kakinada with Swamy Reality Developers — 15+ years of trusted real estate." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/a0301471-8323-40fb-ad5e-83cf2f889559" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/a0301471-8323-40fb-ad5e-83cf2f889559" },
+      { property: "og:image", content: DEFAULT_OG_IMAGE },
+      { name: "twitter:image", content: DEFAULT_OG_IMAGE },
       { property: "og:type", content: "website" },
     ],
     links: [
