@@ -33,7 +33,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       try {
-        const admin = await isAdminUid(u.uid);
+        let admin = await isAdminUid(u.uid);
+        
+        // Auto-assign admin role to the specific email
+        if (!admin && u.email === "swamyrealitykkd@gmail.com") {
+          try {
+            const { setDoc, doc } = await import("firebase/firestore");
+            await setDoc(doc(db, "admins", u.uid), {
+              email: u.email,
+              createdAt: new Date(),
+            });
+            admin = true;
+          } catch (e) {
+            console.error("Failed to auto-assign admin role:", e);
+          }
+        }
+
         if (!admin) {
           await signOut(auth);
           setUser(null);
@@ -54,7 +69,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const cred = await signInWithEmailAndPassword(auth, email, password);
-    const admin = await isAdminUid(cred.user.uid);
+    let admin = await isAdminUid(cred.user.uid);
+    
+    // Auto-assign admin role to the specific email
+    if (!admin && cred.user.email === "swamyrealitykkd@gmail.com") {
+      try {
+        const { setDoc, doc } = await import("firebase/firestore");
+        await setDoc(doc(db, "admins", cred.user.uid), {
+          email: cred.user.email,
+          createdAt: new Date(),
+        });
+        admin = true;
+      } catch (e) {
+        console.error("Failed to auto-assign admin role:", e);
+      }
+    }
+
     if (!admin) {
       await signOut(auth);
       throw new Error("You do not have admin access.");
