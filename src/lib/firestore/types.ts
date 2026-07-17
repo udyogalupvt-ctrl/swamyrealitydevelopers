@@ -115,6 +115,23 @@ export type AdminDoc = {
   createdAt?: Timestamp;
 };
 
+export type HeroSlide = {
+  n: string;
+  name: string;
+  type: string;
+  location: string;
+  image: CloudinaryImage;
+};
+
+export type HeroConfigDoc = {
+  id?: string;
+  title1: string; // e.g. "Building Homes."
+  title2: string; // e.g. "Creating Futures."
+  subtitle: string; // e.g. "RERA & KAUDA approved plots, apartments and gated communities in Kakinada."
+  slides: HeroSlide[];
+  updatedAt?: Timestamp;
+};
+
 export const PROPERTY_TYPE_LABEL: Record<PropertyDoc["type"], string> = {
   apartments: "Apartments",
   plots: "Residential Plots",

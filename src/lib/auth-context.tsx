@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       try {
         let admin = await isAdminUid(u.uid);
-        
+
         // Auto-assign admin role to the specific email
         if (!admin && u.email === "swamyrealitykkd@gmail.com") {
           admin = true;
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     const cred = await signInWithEmailAndPassword(auth, email, password);
     let admin = await isAdminUid(cred.user.uid);
-    
+
     // Auto-assign admin role to the specific email
     if (!admin && cred.user.email === "swamyrealitykkd@gmail.com") {
       admin = true;

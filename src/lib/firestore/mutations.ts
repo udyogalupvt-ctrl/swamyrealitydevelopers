@@ -16,6 +16,7 @@ import type {
   PropertyDoc,
   TeamMemberDoc,
   TestimonialDoc,
+  HeroConfigDoc,
 } from "./types";
 
 // ---------- Enquiries ----------
@@ -163,3 +164,9 @@ export const deleteTeamMember = (id: string) => removeDoc("teamMembers", id);
 // Enquiries admin ops
 export const updateEnquiry = (id: string, d: Partial<EnquiryDoc>) => updateAny("enquiries", id, d);
 export const deleteEnquiry = (id: string) => removeDoc("enquiries", id);
+
+// Settings
+export const updateHeroConfig = async (d: Writable<HeroConfigDoc>) => {
+  await upsertDoc<HeroConfigDoc>("settings", "hero", d);
+  await writeAuditLog({ entity: "heroConfig", entityId: "hero", action: "update", data: d as Record<string, unknown> });
+};

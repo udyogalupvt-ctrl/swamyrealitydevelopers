@@ -7,6 +7,7 @@ import { db } from "@/lib/firebase";
 type NavItem = { to: string; label: string; icon: string; exact?: boolean; badgeKey?: "enquiries" };
 const NAV: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: "◇", exact: true },
+  { to: "/admin/hero", label: "Hero", icon: "⌂" },
   { to: "/admin/properties", label: "Properties", icon: "▤" },
   { to: "/admin/blog", label: "Blog", icon: "❏" },
   { to: "/admin/faqs", label: "FAQs", icon: "?" },

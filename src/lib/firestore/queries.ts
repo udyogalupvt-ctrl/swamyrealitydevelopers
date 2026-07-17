@@ -16,6 +16,7 @@ import type {
   PropertyDoc,
   TeamMemberDoc,
   TestimonialDoc,
+  HeroConfigDoc,
 } from "./types";
 
 function mapDoc<T>(d: { id: string; data: () => Record<string, unknown> }): T {
@@ -147,4 +148,10 @@ export async function listActiveTeamMembers(): Promise<TeamMemberDoc[]> {
 export async function isAdminUid(uid: string): Promise<boolean> {
   const snap = await getDoc(doc(db, "admins", uid));
   return snap.exists();
+}
+
+// ---------- Settings ----------
+export async function getHeroConfig(): Promise<HeroConfigDoc | null> {
+  const snap = await getDoc(doc(db, "settings", "hero"));
+  return snap.exists() ? mapDoc<HeroConfigDoc>(snap) : null;
 }

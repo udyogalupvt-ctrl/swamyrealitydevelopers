@@ -7,6 +7,7 @@ import { FAQ_GROUPS } from "./faqs";
 import { upsertProperty } from "./firestore/mutations";
 import { upsertPost } from "./firestore/mutations";
 import { upsertFaq } from "./firestore/mutations";
+import { updateHeroConfig } from "./firestore/mutations";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 import type { PropertyDoc, BlogPostDoc, FaqDoc } from "./firestore/types";
@@ -120,6 +121,47 @@ export async function seedFaqs(onProgress?: SeedProgress) {
   }
 }
 
+export async function seedHero(onProgress?: SeedProgress) {
+  const slides = [
+    {
+      n: "01",
+      name: "Sri Sri Residency",
+      type: "Luxury Apartments",
+      location: "Ramanayapeta",
+      image: { url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2400&q=80", publicId: "" },
+    },
+    {
+      n: "02",
+      name: "Mahatma Enclave",
+      type: "Gated Community",
+      location: "Sashikanth Nagar",
+      image: { url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=80", publicId: "" },
+    },
+    {
+      n: "03",
+      name: "Swamy Satya Venkata Gardens",
+      type: "Premium Plots",
+      location: "Cheediga",
+      image: { url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=2400&q=80", publicId: "" },
+    },
+    {
+      n: "04",
+      name: "Lalitha Vihar",
+      type: "Residential Plots",
+      location: "Kakinada",
+      image: { url: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2400&q=80", publicId: "" },
+    },
+  ];
+
+  await updateHeroConfig({
+    title1: "Building Homes.",
+    title2: "Creating Futures.",
+    subtitle: "RERA & KAUDA approved plots, apartments and gated communities in Kakinada.",
+    slides,
+  });
+  onProgress?.("hero", 1, 1);
+}
+
 export async function seedAdmin(uid: string, email: string, name = "Admin") {
   await setDoc(
     doc(db, "admins", uid),
@@ -132,4 +174,5 @@ export async function seedAll(onProgress?: SeedProgress) {
   await seedProperties(onProgress);
   await seedPosts(onProgress);
   await seedFaqs(onProgress);
+  await seedHero(onProgress);
 }

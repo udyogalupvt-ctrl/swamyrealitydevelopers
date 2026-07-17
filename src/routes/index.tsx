@@ -11,7 +11,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { pageMeta, ldScript, faqLd, aggregateRatingLd } from "../lib/seo";
 import { PropertyDetailsDrawer } from "../components/PropertyDetailsDrawer";
 import { FAQ_GROUPS } from "../lib/faqs";
-import { useTestimonials } from "../lib/queries";
+import { useHeroConfig, useTestimonials } from "../lib/queries";
 import { usePropertiesList } from "../lib/data-adapters";
 import type { TestimonialDoc } from "../lib/firestore/types";
 
@@ -257,29 +257,35 @@ function Header({ dark, toggle }: { dark: boolean; toggle: () => void }) {
 // Hero
 // ------------------------------------------------------------------
 function Hero() {
+  const { data: config } = useHeroConfig();
+  const slides = config?.slides && config.slides.length > 0 ? config.slides : HERO_SLIDES;
+  const title1 = config?.title1 || "Building Homes.";
+  const title2 = config?.title2 || "Creating Futures.";
+  const subtitle = config?.subtitle || "RERA & KAUDA approved plots, apartments and gated communities in Kakinada.";
+
   const [i, setI] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      setI((p) => (p + 1) % HERO_SLIDES.length);
+      setI((p) => (p + 1) % slides.length);
     }, 6000);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, []);
+  }, [slides.length]);
 
   const go = (d: number) => {
-    setI((p) => (p + d + HERO_SLIDES.length) % HERO_SLIDES.length);
+    setI((p) => (p + d + slides.length) % slides.length);
     if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => setI((p) => (p + 1) % HERO_SLIDES.length), 6000);
+    timerRef.current = setInterval(() => setI((p) => (p + 1) % slides.length), 6000);
   };
 
-  const slide = HERO_SLIDES[i];
+  const slide = slides[i] || slides[0];
 
   return (
     <section className="relative h-[100svh] w-full overflow-hidden bg-black">
-      {HERO_SLIDES.map((s, idx) => (
+      {slides.map((s, idx) => (
         <div
           key={s.n}
           className={`absolute inset-0 transition-opacity duration-[1400ms] ${
@@ -287,7 +293,7 @@ function Hero() {
           }`}
         >
           <img
-            src={s.img}
+            src={(s as any).image?.url || (s as any).img}
             alt={s.name}
             className={`h-full w-full object-cover ${idx === i ? "kenburns" : ""}`}
           />
@@ -320,10 +326,10 @@ function Hero() {
             aria-label="Building Homes. Creating Futures."
           >
             <span aria-hidden="true">
-              <LettersReveal text="Building Homes." delay={0.25} />
+              <LettersReveal text={title1} delay={0.25} />
               <br />
               <span className="italic font-light text-white/70 block text-[28px] sm:text-[52px] lg:text-[76px]">
-                <LettersReveal text="Creating Futures." delay={0.7} />
+                <LettersReveal text={title2} delay={0.7} />
               </span>
             </span>
           </h1>
@@ -333,7 +339,7 @@ function Hero() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 1.3 }}
             className="mt-6 max-w-xl text-[15px] text-white/75 lg:text-base"
           >
-            RERA & KAUDA approved plots, apartments and gated communities in Kakinada.
+            {subtitle}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -379,7 +385,7 @@ function Hero() {
           <div className="font-display text-[64px] leading-none">
             {slide.n}
             <span className="mx-2 text-white/40">—</span>
-            <span className="text-white/40">0{HERO_SLIDES.length}</span>
+            <span className="text-white/40">0{slides.length}</span>
           </div>
           <div className="mt-4 font-display text-2xl">{slide.name}</div>
           <div className="mt-1 text-[12px] uppercase tracking-[0.2em] text-white/70">
@@ -397,7 +403,7 @@ function Hero() {
 
         {/* progress bars */}
         <div className="mt-10 flex items-center gap-3">
-          {HERO_SLIDES.map((_, idx) => (
+          {slides.map((_, idx) => (
             <div key={idx} className="h-[2px] flex-1 max-w-[60px] bg-white/25 overflow-hidden">
               <div
                 key={idx === i ? `on-${i}` : `off-${idx}`}

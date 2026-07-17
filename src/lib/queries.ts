@@ -10,6 +10,7 @@ import {
   listHomepageFaqs,
   listPublishedPosts,
   listPublishedProperties,
+  getHeroConfig,
 } from "./firestore/queries";
 
 const STALE = 5 * 60_000;
@@ -57,3 +58,6 @@ export const useTestimonials = () =>
 
 export const useTeamMembers = () =>
   useQuery({ queryKey: ["teamMembers"], queryFn: listActiveTeamMembers, staleTime: STALE });
+
+export const useHeroConfig = () =>
+  useQuery({ queryKey: ["heroConfig"], queryFn: getHeroConfig, staleTime: STALE });
