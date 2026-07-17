@@ -9,7 +9,7 @@ import {
 import { db, auth } from "../firebase";
 
 export type AuditAction = "create" | "update" | "delete";
-export type AuditEntity = "property" | "blogPost" | "galleryImage";
+export type AuditEntity = "property" | "blogPost" | "galleryImage" | "heroConfig";
 
 export type AuditLogDoc = {
   id: string;
@@ -26,12 +26,14 @@ const COLLECTION_FOR_ENTITY: Record<AuditEntity, string> = {
   property: "properties",
   blogPost: "blogPosts",
   galleryImage: "galleryImages",
+  heroConfig: "settings",
 };
 
 const LABEL_FIELDS: Record<AuditEntity, string[]> = {
   property: ["name", "slug"],
   blogPost: ["title", "slug"],
   galleryImage: ["title", "category"],
+  heroConfig: ["title1", "subtitle"],
 };
 
 function pickLabel(entity: AuditEntity, data: Record<string, unknown> | null | undefined): string {

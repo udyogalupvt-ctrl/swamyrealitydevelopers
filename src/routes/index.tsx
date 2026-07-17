@@ -1051,7 +1051,7 @@ function Footer() {
         <div className="grid gap-12 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <img
-              src={logoDarkBg.url}
+              src={logoDarkBg}
               alt="Swamy Reality Developers"
               className="h-12 w-auto"
             />

@@ -8,7 +8,7 @@ export const SITE_URL =
   "https://swamyrealitydevelopers.com";
 
 export const SITE_NAME = "Swamy Reality Developers";
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-cover.jpg`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/logo.png`;
 
 export const CONTACT = {
   phone: "+919989778222",

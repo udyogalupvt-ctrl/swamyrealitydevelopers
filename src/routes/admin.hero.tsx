@@ -90,7 +90,7 @@ function HeroAdmin() {
   return (
     <AdminShell
       title="Hero Section"
-      actions={<PrimaryButton onClick={handleSave} disabled={isSaving}>{isSaving ? "Saving..." : "Save Changes"}</PrimaryButton>}
+      action={<PrimaryButton onClick={handleSave} disabled={isSaving}>{isSaving ? "Saving..." : "Save Changes"}</PrimaryButton>}
     >
       <div className="p-8 max-w-4xl space-y-8">
         <section>
@@ -142,12 +142,13 @@ function HeroAdmin() {
                     value={slide.image?.url ? [slide.image] : []}
                     onChange={(imgs) => updateSlide(index, { image: imgs[0] || { url: "", publicId: "" } })}
                     max={1}
+                    folder="hero"
                   />
                 </div>
                 <div className="flex-1 space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-gray-500">Slide {slide.n}</span>
-                    <GhostButton onClick={() => removeSlide(index)} className="text-red-500 hover:text-red-700">Remove</GhostButton>
+                    <button type="button" onClick={() => removeSlide(index)} className="text-red-500 hover:text-red-700 text-sm hover:underline">Remove</button>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">Project Name</label>
