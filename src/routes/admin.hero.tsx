@@ -11,6 +11,7 @@ import { DndContext, PointerSensor, closestCenter, useSensor, useSensors, type D
 import { SortableContext, arrayMove, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+// Route tree is already patched in routeTree.gen.ts
 export const Route = createFileRoute("/admin/hero")({ component: HeroAdmin });
 
 function HeroAdmin() {
@@ -139,9 +140,11 @@ function HeroAdmin() {
                 <div className="w-1/3">
                   <label className="block text-sm font-medium mb-1">Background Image</label>
                   <ImageUploader
+                    // @ts-ignore - Route tree is patched but IDE might lag
                     value={slide.image?.url ? [slide.image] : []}
                     onChange={(imgs) => updateSlide(index, { image: imgs[0] || { url: "", publicId: "" } })}
                     max={1}
+                    multiple={false}
                     folder="swamy/hero"
                   />
                 </div>

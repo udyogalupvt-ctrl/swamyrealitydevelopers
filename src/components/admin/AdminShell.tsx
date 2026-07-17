@@ -102,7 +102,7 @@ export function AdminShell({ title, breadcrumb, action, children }: ShellProps) 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       {/* Desktop sidebar */}
-      <div className="sticky top-0 hidden h-screen md:block">{sidebar}</div>
+      <div className="fixed inset-y-0 left-0 z-40 hidden h-screen md:block">{sidebar}</div>
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
@@ -111,7 +111,7 @@ export function AdminShell({ title, breadcrumb, action, children }: ShellProps) 
         </div>
       )}
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className={`flex min-w-0 flex-1 flex-col transition-all duration-200 ${collapsed ? "md:ml-16" : "md:ml-60"}`}>
         <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80 md:px-6">
           <button
             className="rounded-md border border-slate-200 p-1.5 text-slate-600 hover:bg-slate-100 md:hidden dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
