@@ -34,6 +34,7 @@ import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
 import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as AdminHeroRouteImport } from './routes/admin.hero'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -160,6 +161,11 @@ const AdminAuditRoute = AdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminHeroRoute = AdminHeroRouteImport.update({
+  id: '/hero',
+  path: '/hero',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -182,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/admin/seed': typeof AdminSeedRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/hero': typeof AdminHeroRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/properties/$slug': typeof PropertiesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/admin/seed': typeof AdminSeedRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/hero': typeof AdminHeroRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/properties/$slug': typeof PropertiesSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   '/admin/seed': typeof AdminSeedRoute
   '/admin/team': typeof AdminTeamRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
+  '/admin/hero': typeof AdminHeroRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/properties/$slug': typeof PropertiesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/admin/seed'
     | '/admin/team'
     | '/admin/testimonials'
+    | '/admin/hero'
     | '/blog/$slug'
     | '/properties/$slug'
     | '/admin/'
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/admin/seed'
     | '/admin/team'
     | '/admin/testimonials'
+    | '/admin/hero'
     | '/blog/$slug'
     | '/properties/$slug'
     | '/admin'
@@ -314,6 +325,7 @@ export interface FileRouteTypes {
     | '/admin/seed'
     | '/admin/team'
     | '/admin/testimonials'
+    | '/admin/hero'
     | '/blog/$slug'
     | '/properties/$slug'
     | '/admin/'
@@ -511,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuditRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/hero': {
+      id: '/admin/hero'
+      path: '/hero'
+      fullPath: '/admin/hero'
+      preLoaderRoute: typeof AdminHeroRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
@@ -525,6 +544,7 @@ interface AdminRouteChildren {
   AdminSeedRoute: typeof AdminSeedRoute
   AdminTeamRoute: typeof AdminTeamRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
+  AdminHeroRoute: typeof AdminHeroRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -539,6 +559,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSeedRoute: AdminSeedRoute,
   AdminTeamRoute: AdminTeamRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
+  AdminHeroRoute: AdminHeroRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
