@@ -5,7 +5,7 @@ import {
   signOut,
   type User,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { isAdminUid } from "./firestore/queries";
 
 type AuthState = {
