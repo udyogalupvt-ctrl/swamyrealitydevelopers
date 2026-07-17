@@ -142,7 +142,7 @@ function HeroAdmin() {
                     value={slide.image?.url ? [slide.image] : []}
                     onChange={(imgs) => updateSlide(index, { image: imgs[0] || { url: "", publicId: "" } })}
                     max={1}
-                    folder="hero"
+                    folder="swamy/hero"
                   />
                 </div>
                 <div className="flex-1 space-y-4">

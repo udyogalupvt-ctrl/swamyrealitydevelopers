@@ -3,7 +3,7 @@ const CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "dcoimqij";
 const PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "levelupingup";
 
 export type CloudinaryUpload = { url: string; publicId: string };
-export type UploadFolder = "swamy/properties" | "swamy/blog" | "swamy/gallery" | "swamy/testimonials" | "swamy/team";
+export type UploadFolder = "swamy/properties" | "swamy/blog" | "swamy/gallery" | "swamy/testimonials" | "swamy/team" | "swamy/hero";
 
 export const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
