@@ -19,6 +19,14 @@ export function ProjectsCoverflow({ items, onView }: Props) {
     if (index >= count) setIndex(0);
   }, [count, index]);
 
+  useEffect(() => {
+    if (count <= 1) return;
+    const timer = setInterval(() => {
+      setIndex((i) => (i + 1) % count);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [count, index]);
+
   if (count === 0) {
     return (
       <div className="rounded-xl border border-dashed border-black/15 p-6 text-center text-[13px] text-body dark:border-white/15">
