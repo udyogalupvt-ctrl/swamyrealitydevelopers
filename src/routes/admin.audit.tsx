@@ -7,13 +7,14 @@ import { AdminShell, Card } from "@/components/admin/AdminShell";
 
 export const Route = createFileRoute("/admin/audit")({ component: AuditPage });
 
-type EntityFilter = "all" | "property" | "blogPost" | "galleryImage";
+type EntityFilter = "all" | "property" | "blogPost" | "galleryImage" | "heroConfig";
 type ActionFilter = "all" | "create" | "update" | "delete";
 
 const ENTITY_LABEL: Record<Exclude<EntityFilter, "all">, string> = {
   property: "Property",
   blogPost: "Blog post",
   galleryImage: "Gallery image",
+  heroConfig: "Hero config",
 };
 
 const ACTION_STYLES: Record<Exclude<ActionFilter, "all">, string> = {

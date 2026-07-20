@@ -12,7 +12,7 @@ import { pageMeta, ldScript, faqLd, aggregateRatingLd } from "../lib/seo";
 import { PropertyDetailsDrawer } from "../components/PropertyDetailsDrawer";
 import { FAQ_GROUPS } from "../lib/faqs";
 import { useHeroConfig, useTestimonials } from "../lib/queries";
-import { usePropertiesList } from "../lib/data-adapters";
+import { usePropertiesList, useFeaturedList } from "../lib/data-adapters";
 import type { TestimonialDoc } from "../lib/firestore/types";
 
 export const Route = createFileRoute("/")({
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
           rel: "preload",
           as: "image",
           href: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2400&q=80",
-          fetchpriority: "high",
+          fetchPriority: "high",
         },
       ],
       scripts: [
@@ -145,7 +145,6 @@ const TESTIMONIALS = [
 // ------------------------------------------------------------------
 function useReveal() {
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal");
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -155,10 +154,22 @@ function useReveal() {
           }
         });
       },
-      { threshold: 0.15 },
+      { threshold: 0.15 }
     );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    const observeAll = () => {
+      document.querySelectorAll(".reveal:not(.in)").forEach((el) => io.observe(el));
+    };
+
+    observeAll();
+
+    const mo = new MutationObserver(() => observeAll());
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
   }, []);
 }
 
@@ -576,9 +587,8 @@ function About() {
 // Projects
 // ------------------------------------------------------------------
 function Projects() {
-  const { data: properties } = usePropertiesList();
-  const featured = properties.slice(0, 6);
-  const [selected, setSelected] = useState<(typeof properties)[number] | null>(null);
+  const { data: featured } = useFeaturedList();
+  const [selected, setSelected] = useState<(typeof featured)[number] | null>(null);
   return (
     <section id="projects" className="bg-warm-gray py-20 lg:py-[120px]">
       <div className="mx-auto max-w-[1280px] px-6 lg:px-10">
