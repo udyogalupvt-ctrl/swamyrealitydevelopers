@@ -73,7 +73,7 @@ function BlogDetail() {
   const staticPost = slug ? getPost(slug) : undefined;
   const { data: livePost, html: liveHtml, loading: postLoading } = usePostBySlug(slug);
   const { data: posts } = usePostsList();
-  const post: Post | null | undefined = livePost ?? staticPost;
+  const post: Post | null | undefined = postLoading ? undefined : (livePost ?? staticPost);
   const { dark, toggle } = useDarkMode();
   useLenis();
 

@@ -80,7 +80,7 @@ function PropertyDetail() {
   const { property: staticProperty } = Route.useLoaderData();
   const { data: livePost, loading } = usePropertyBySlug(slug);
   const { data: properties } = usePropertiesList();
-  const p: Property | undefined = livePost ?? staticProperty ?? undefined;
+  const p: Property | undefined = loading ? undefined : (livePost ?? staticProperty ?? undefined);
   const { dark, toggle } = useDarkMode();
   useLenis();
 
