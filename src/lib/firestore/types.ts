@@ -15,6 +15,7 @@ export type PropertyDoc = {
   approvals: string[];
   reraId: string;
   coverImage: CloudinaryImage;
+  youtubeUrls?: string[];
   galleryImages: CloudinaryImage[];
   status: "ongoing" | "completed" | "upcoming";
   isFeatured: boolean;
@@ -121,6 +122,7 @@ export type HeroSlide = {
   type: string;
   location: string;
   image: CloudinaryImage;
+  mobileImage?: CloudinaryImage;
 };
 
 export type HeroConfigDoc = {

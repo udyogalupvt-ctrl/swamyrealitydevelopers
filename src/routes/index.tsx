@@ -285,20 +285,31 @@ function Hero() {
 
   return (
     <section className="relative h-[100svh] w-full overflow-hidden bg-black">
-      {slides.map((s, idx) => (
-        <div
-          key={s.n}
-          className={`absolute inset-0 transition-opacity duration-[1400ms] ${
-            idx === i ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <img
-            src={(s as any).image?.url || (s as any).img}
-            alt={s.name}
-            className={`h-full w-full object-cover ${idx === i ? "kenburns" : ""}`}
-          />
-        </div>
-      ))}
+      {slides.map((s, idx) => {
+        const desktopSrc = (s as any).image?.url || (s as any).img;
+        const mobileSrc = (s as any).mobileImage?.url || desktopSrc;
+        return (
+          <div
+            key={s.n}
+            className={`absolute inset-0 transition-opacity duration-[1400ms] ${
+              idx === i ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {/* Desktop image — hidden on mobile */}
+            <img
+              src={desktopSrc}
+              alt={s.name}
+              className={`hidden md:block h-full w-full object-cover ${idx === i ? "kenburns" : ""}`}
+            />
+            {/* Mobile image — shown only on small screens */}
+            <img
+              src={mobileSrc}
+              alt={s.name}
+              className={`md:hidden h-full w-full object-cover ${idx === i ? "kenburns" : ""}`}
+            />
+          </div>
+        );
+      })}
 
       {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-tr from-black/75 via-black/45 to-black/20" />

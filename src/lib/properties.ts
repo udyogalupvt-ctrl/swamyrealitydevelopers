@@ -19,6 +19,7 @@ export type Property = {
   approvals: { rera: string; kauda: boolean; dtcp: boolean };
   locationAdvantages: { place: string; distance: string }[];
   mapQuery: string;
+  youtubeUrls?: string[];
 };
 
 const commonAmenities = [

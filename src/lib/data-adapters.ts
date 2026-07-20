@@ -58,6 +58,7 @@ export function propertyFromDoc(doc: PropertyDoc): Property {
     },
     locationAdvantages: doc.locationAdvantages || [],
     mapQuery: doc.mapQuery || doc.location,
+    youtubeUrls: doc.youtubeUrls || [],
   };
 }
 

@@ -63,6 +63,7 @@ function HeroAdmin() {
             type: "",
             location: "",
             image: { url: "", publicId: "" },
+            mobileImage: { url: "", publicId: "" },
           },
         ],
       };
@@ -137,16 +138,32 @@ function HeroAdmin() {
           <div className="space-y-4">
             {formData.slides.map((slide, index) => (
               <Card key={index} className="p-4 flex gap-6">
-                <div className="w-1/3">
-                  <label className="block text-sm font-medium mb-1">Background Image</label>
-                  <ImageUploader
-                    // @ts-ignore - Route tree is patched but IDE might lag
-                    value={slide.image?.url ? [slide.image] : []}
-                    onChange={(imgs) => updateSlide(index, { image: imgs[0] || { url: "", publicId: "" } })}
-                    max={1}
-                    multiple={false}
-                    folder="swamy/hero"
-                  />
+                <div className="w-1/3 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Desktop Image</label>
+                    <ImageUploader
+                      // @ts-ignore - Route tree is patched but IDE might lag
+                      value={slide.image?.url ? [slide.image] : []}
+                      onChange={(imgs) => updateSlide(index, { image: imgs[0] || { url: "", publicId: "" } })}
+                      max={1}
+                      multiple={false}
+                      folder="swamy/hero"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Mobile Image <span className="text-xs text-gray-400 font-normal">(optional — shown on phones)</span></label>
+                    <ImageUploader
+                      // @ts-ignore
+                      value={slide.mobileImage?.url ? [slide.mobileImage] : []}
+                      onChange={(imgs) => updateSlide(index, { mobileImage: imgs[0] || { url: "", publicId: "" } })}
+                      max={1}
+                      multiple={false}
+                      folder="swamy/hero"
+                    />
+                    {!slide.mobileImage?.url && (
+                      <p className="mt-1 text-[11px] text-gray-400">Falls back to desktop image if empty.</p>
+                    )}
+                  </div>
                 </div>
                 <div className="flex-1 space-y-4">
                   <div className="flex justify-between items-center">

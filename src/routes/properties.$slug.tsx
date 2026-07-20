@@ -84,9 +84,6 @@ function PropertyDetail() {
   const { dark, toggle } = useDarkMode();
   useLenis();
 
-  const [activeImg, setActiveImg] = useState(0);
-  const [lightbox, setLightbox] = useState(false);
-
   if (!p && loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-[13px] text-body">
@@ -130,43 +127,12 @@ function PropertyDetail() {
 
 
       {/* Gallery */}
-      <section className="mx-auto max-w-[1280px] px-6 lg:px-10">
-        <div className="grid gap-3 lg:grid-cols-[1fr_120px]">
-          <button
-            onClick={() => setLightbox(true)}
-            className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-black"
-          >
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={activeImg}
-                src={p.images[activeImg]}
-                alt={p.imageAlts?.[activeImg] || p.name}
-                initial={{ opacity: 0, scale: 1.02 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </AnimatePresence>
-            <div className="absolute right-4 top-4 rounded-full bg-black/50 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-white backdrop-blur">
-              Click to expand
-            </div>
-          </button>
-          <div className="flex gap-3 overflow-x-auto lg:flex-col lg:overflow-visible">
-            {p.images.map((src, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveImg(i)}
-                className={`relative aspect-square w-24 shrink-0 overflow-hidden rounded-xl transition-all lg:w-full ${
-                  activeImg === i ? "ring-2 ring-[#1E3A5F] ring-offset-2 dark:ring-offset-[#0f1520]" : "opacity-70 hover:opacity-100"
-                }`}
-              >
-                <img src={src} alt={p.imageAlts?.[i] || `${p.name} — image ${i + 1}`} className="absolute inset-0 h-full w-full object-cover" />
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+      <GallerySection
+        images={p.images}
+        imageAlts={p.imageAlts}
+        youtubeUrls={p.youtubeUrls}
+        name={p.name}
+      />
 
       {/* Two-column content */}
       <section className="mx-auto max-w-[1280px] px-6 py-14 lg:px-10 lg:py-20">
@@ -313,20 +279,248 @@ function PropertyDetail() {
 
       <SiteFooter />
       <FloatingActions />
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------
+// YouTube helpers
+// ------------------------------------------------------------------
+function extractYtId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/,
+  ];
+  for (const p of patterns) {
+    const m = url.trim().match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+type GalleryItem = { type: "image"; src: string; alt: string } | { type: "video"; youtubeId: string; url: string };
+
+// ------------------------------------------------------------------
+// GallerySection — images + YouTube videos
+// ------------------------------------------------------------------
+function GallerySection({
+  images, imageAlts, youtubeUrls, name,
+}: {
+  images: string[]; imageAlts?: string[]; youtubeUrls?: string[]; name: string;
+}) {
+  const items: GalleryItem[] = [
+    ...images.map((src, i): GalleryItem => ({
+      type: "image",
+      src,
+      alt: imageAlts?.[i] || `${name} — image ${i + 1}`,
+    })),
+    ...(youtubeUrls || [])
+      .map((url): GalleryItem | null => {
+        const id = extractYtId(url);
+        return id ? { type: "video", youtubeId: id, url } : null;
+      })
+      .filter((x): x is GalleryItem => x !== null),
+  ];
+
+  const [active, setActive] = useState(0);
+  const [lightbox, setLightbox] = useState(false);
+
+  const current = items[active];
+
+  return (
+    <>
+      <section className="mx-auto max-w-[1280px] px-6 lg:px-10">
+        <div className="grid gap-3 lg:grid-cols-[1fr_120px]">
+          {/* Main viewer */}
+          <button
+            onClick={() => setLightbox(true)}
+            className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-black"
+          >
+            <AnimatePresence mode="wait">
+              {current?.type === "image" ? (
+                <motion.img
+                  key={`img-${active}`}
+                  src={current.src}
+                  alt={current.alt}
+                  initial={{ opacity: 0, scale: 1.02 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : current?.type === "video" ? (
+                <motion.div
+                  key={`vid-${active}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0"
+                >
+                  <img
+                    src={`https://img.youtube.com/vi/${current.youtubeId}/maxresdefault.jpg`}
+                    alt="Video thumbnail"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-600 text-white shadow-lg transition-transform hover:scale-110">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
+                    </div>
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+            <div className="absolute right-4 top-4 rounded-full bg-black/50 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-white backdrop-blur">
+              {current?.type === "video" ? "Click to play" : "Click to expand"}
+            </div>
+          </button>
+
+          {/* Thumbnails strip */}
+          <div className="flex gap-3 overflow-x-auto lg:flex-col lg:overflow-visible">
+            {items.map((item, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                className={`relative aspect-square w-24 shrink-0 overflow-hidden rounded-xl transition-all lg:w-full ${
+                  active === i ? "ring-2 ring-[#1E3A5F] ring-offset-2 dark:ring-offset-[#0f1520]" : "opacity-70 hover:opacity-100"
+                }`}
+              >
+                {item.type === "image" ? (
+                  <img src={item.src} alt={item.alt} className="absolute inset-0 h-full w-full object-cover" />
+                ) : (
+                  <>
+                    <img
+                      src={`https://img.youtube.com/vi/${item.youtubeId}/mqdefault.jpg`}
+                      alt="Video thumbnail"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Lightbox */}
       <AnimatePresence>
         {lightbox && (
-          <Lightbox
-            images={p.images}
-            alts={p.imageAlts || []}
-            index={activeImg}
-            onIndex={setActiveImg}
+          <MediaLightbox
+            items={items}
+            index={active}
+            onIndex={setActive}
             onClose={() => setLightbox(false)}
           />
         )}
       </AnimatePresence>
-    </div>
+    </>
+  );
+}
+
+// ------------------------------------------------------------------
+// Lightbox — supports both images and YouTube embeds
+// ------------------------------------------------------------------
+function MediaLightbox({
+  items, index, onIndex, onClose,
+}: {
+  items: GalleryItem[]; index: number; onIndex: (i: number) => void; onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onIndex((index + 1) % items.length);
+      if (e.key === "ArrowLeft") onIndex((index - 1 + items.length) % items.length);
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [index, items.length, onIndex, onClose]);
+
+  const [zoom, setZoom] = useState(1);
+  const current = items[index];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[110] flex flex-col bg-black/95 backdrop-blur"
+    >
+      <div className="flex items-center justify-between px-6 py-4 text-white/80">
+        <div className="text-[12px] font-medium uppercase tracking-[0.24em]">
+          {index + 1} / {items.length}
+          {current?.type === "video" && <span className="ml-2 text-red-400">● Video</span>}
+        </div>
+        <div className="flex items-center gap-2">
+          {current?.type === "image" && (
+            <>
+              <button onClick={() => setZoom((z) => Math.max(1, z - 0.25))} aria-label="Zoom out" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:bg-white/10">−</button>
+              <button onClick={() => setZoom((z) => Math.min(3, z + 0.25))} aria-label="Zoom in" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:bg-white/10">+</button>
+            </>
+          )}
+          <button onClick={onClose} aria-label="Close" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:bg-white/10">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+      <div className="relative flex flex-1 items-center justify-center overflow-hidden px-4">
+        <button
+          onClick={() => onIndex((index - 1 + items.length) % items.length)}
+          className="absolute left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20"
+          aria-label="Previous"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M11 19l-7-7 7-7"/></svg>
+        </button>
+        <AnimatePresence mode="wait">
+          {current?.type === "image" ? (
+            <motion.img
+              key={`lb-img-${index}`}
+              src={current.src}
+              alt={current.alt}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: zoom }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="max-h-[85vh] max-w-[92vw] object-contain"
+              style={{ cursor: zoom > 1 ? "zoom-out" : "zoom-in" }}
+              onClick={() => setZoom((z) => (z > 1 ? 1 : 2))}
+            />
+          ) : current?.type === "video" ? (
+            <motion.div
+              key={`lb-vid-${index}`}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="aspect-video w-full max-w-4xl"
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${current.youtubeId}?autoplay=1&rel=0`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="h-full w-full rounded-xl"
+                title="YouTube video"
+              />
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+        <button
+          onClick={() => onIndex((index + 1) % items.length)}
+          className="absolute right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20"
+          aria-label="Next"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </motion.div>
   );
 }
 
@@ -478,76 +672,3 @@ function FloatField({
   );
 }
 
-function Lightbox({
-  images, alts, index, onIndex, onClose,
-}: {
-  images: string[]; alts?: string[]; index: number; onIndex: (i: number) => void; onClose: () => void;
-}) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") onIndex((index + 1) % images.length);
-      if (e.key === "ArrowLeft") onIndex((index - 1 + images.length) % images.length);
-    };
-    window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [index, images.length, onIndex, onClose]);
-
-  const [zoom, setZoom] = useState(1);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[110] flex flex-col bg-black/95 backdrop-blur"
-    >
-      <div className="flex items-center justify-between px-6 py-4 text-white/80">
-        <div className="text-[12px] font-medium uppercase tracking-[0.24em]">
-          {index + 1} / {images.length}
-        </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setZoom((z) => Math.max(1, z - 0.25))} aria-label="Zoom out" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:bg-white/10">−</button>
-          <button onClick={() => setZoom((z) => Math.min(3, z + 0.25))} aria-label="Zoom in" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:bg-white/10">+</button>
-          <button onClick={onClose} aria-label="Close" className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 hover:bg-white/10">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
-        </div>
-      </div>
-      <div className="relative flex flex-1 items-center justify-center overflow-hidden px-4">
-        <button
-          onClick={() => onIndex((index - 1 + images.length) % images.length)}
-          className="absolute left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20"
-          aria-label="Previous"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M11 19l-7-7 7-7"/></svg>
-        </button>
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={index}
-            src={images[index]}
-            alt={alts?.[index] || ""}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: zoom }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="max-h-[85vh] max-w-[92vw] object-contain"
-            style={{ cursor: zoom > 1 ? "zoom-out" : "zoom-in" }}
-            onClick={() => setZoom((z) => (z > 1 ? 1 : 2))}
-          />
-        </AnimatePresence>
-        <button
-          onClick={() => onIndex((index + 1) % images.length)}
-          className="absolute right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white transition hover:bg-white/20"
-          aria-label="Next"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-        </button>
-      </div>
-    </motion.div>
-  );
-}

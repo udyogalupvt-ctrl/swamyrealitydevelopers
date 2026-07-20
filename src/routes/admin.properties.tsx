@@ -34,6 +34,7 @@ const empty = (order = 0): Form => ({
   approvals: [],
   reraId: "",
   coverImage: { url: "", publicId: "" },
+  youtubeUrls: [],
   galleryImages: [],
   status: "ongoing",
   isFeatured: false,
@@ -268,7 +269,7 @@ function PropertyEditor({ initial, onClose, onSaved }: { initial: Form; onClose:
             <input value={f.reraId} onChange={(e) => set("reraId", e.target.value)} className={inputCls} />
           </Field>
 
-          <Field label="Cover image">
+          <Field label="Cover image" hint="Used on listing cards and detail page hero">
             <ImageUploader
               folder="swamy/properties"
               value={f.coverImage?.url ? [f.coverImage] : []}
@@ -287,6 +288,8 @@ function PropertyEditor({ initial, onClose, onSaved }: { initial: Form; onClose:
               aspectRatio="4:3"
             />
           </Field>
+
+          <YoutubeUrlsField values={f.youtubeUrls || []} onChange={(v) => set("youtubeUrls", v)} />
 
           <div className="flex flex-wrap gap-6 text-[13px]">
             <label className="flex items-center gap-2"><input type="checkbox" checked={f.isFeatured} onChange={(e) => set("isFeatured", e.target.checked)} /> Featured</label>
@@ -347,6 +350,101 @@ function ListField({ label, values, onChange }: { label: string; values: string[
               <button type="button" onClick={() => onChange(values.filter((_, idx) => idx !== i))} className="text-slate-400 hover:text-red-600">✕</button>
             </span>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Extracts a YouTube video ID from various URL formats. */
+function extractYoutubeId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/,
+  ];
+  for (const p of patterns) {
+    const m = url.trim().match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+function YoutubeUrlsField({ values, onChange }: { values: string[]; onChange: (v: string[]) => void }) {
+  const [draft, setDraft] = useState("");
+  const [error, setError] = useState("");
+
+  const add = () => {
+    const url = draft.trim();
+    if (!url) return;
+    const id = extractYoutubeId(url);
+    if (!id) {
+      setError("Invalid YouTube URL. Paste a valid YouTube link.");
+      return;
+    }
+    // Normalize to standard format
+    const normalized = `https://www.youtube.com/watch?v=${id}`;
+    if (values.includes(normalized)) {
+      setError("This video is already added.");
+      return;
+    }
+    onChange([...values, normalized]);
+    setDraft("");
+    setError("");
+  };
+
+  return (
+    <div>
+      <div className="mb-1.5 flex items-baseline justify-between gap-2">
+        <span className="text-[12px] font-medium text-slate-700 dark:text-slate-300">
+          YouTube Videos
+        </span>
+        <span className="text-[10px] text-slate-400">{values.length} video{values.length !== 1 ? "s" : ""}</span>
+      </div>
+      <div className="flex gap-1.5">
+        <input
+          value={draft}
+          onChange={(e) => { setDraft(e.target.value); setError(""); }}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+          placeholder="Paste YouTube URL…"
+          className={inputCls}
+        />
+        <GhostButton onClick={add}>Add</GhostButton>
+      </div>
+      {error && <div className="mt-1 text-[11px] text-red-500">{error}</div>}
+      {values.length > 0 && (
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {values.map((url, i) => {
+            const id = extractYoutubeId(url);
+            return (
+              <div key={i} className="group relative flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900">
+                {id && (
+                  <div className="relative h-14 w-24 shrink-0 overflow-hidden rounded-md bg-slate-100 dark:bg-slate-800">
+                    <img
+                      src={`https://img.youtube.com/vi/${id}/mqdefault.jpg`}
+                      alt="YouTube thumbnail"
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="white" className="drop-shadow-md">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-[12px] text-slate-600 dark:text-slate-300" title={url}>{url}</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onChange(values.filter((_, idx) => idx !== i))}
+                  className="shrink-0 rounded-md p-1 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40"
+                  title="Remove video"
+                >
+                  ✕
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
