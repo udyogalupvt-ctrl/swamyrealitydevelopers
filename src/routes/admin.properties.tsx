@@ -183,6 +183,7 @@ function Row({ p, onEdit, onDelete, onPatch }: {
 }
 
 function PropertyEditor({ initial, onClose, onSaved }: { initial: Form; onClose: () => void; onSaved: () => void }) {
+  const qc = useQueryClient();
   const [f, setF] = useState<Form>(initial);
   const [saving, setSaving] = useState(false);
   const [slugTouched, setSlugTouched] = useState(!!initial.slug);
@@ -199,6 +200,8 @@ function PropertyEditor({ initial, onClose, onSaved }: { initial: Form; onClose:
       const { id, ...payload } = f;
       if (id) { await updateProperty(id, payload); toast.success("Property updated"); }
       else { await createProperty(payload); toast.success("Property created"); }
+      qc.invalidateQueries({ queryKey: ["admin", "properties"] });
+      qc.invalidateQueries({ queryKey: ["properties"] });
       onSaved();
     } catch (e) { toast.error((e as Error).message); }
     finally { setSaving(false); }
