@@ -65,17 +65,19 @@ export function propertyFromDoc(doc: PropertyDoc): Property {
 
 export function usePropertiesList(): { data: Property[]; loading: boolean; error: boolean } {
   const q = useProperties();
+  if (q.isLoading) return { data: [], loading: true, error: false };
   const list = q.data && q.data.length > 0 ? q.data.map(propertyFromDoc) : STATIC_PROPERTIES;
-  return { data: list, loading: q.isLoading, error: !!q.error };
+  return { data: list, loading: false, error: !!q.error };
 }
 
 export function useFeaturedList(): { data: Property[]; loading: boolean } {
   const q = useFeaturedProperties();
+  if (q.isLoading) return { data: [], loading: true };
   const list =
     q.data && q.data.length > 0
       ? q.data.map(propertyFromDoc)
       : STATIC_PROPERTIES.slice(0, 3);
-  return { data: list, loading: q.isLoading };
+  return { data: list, loading: false };
 }
 
 export function usePropertyBySlug(slug: string | undefined): {
@@ -113,8 +115,9 @@ export function postFromDoc(doc: BlogPostDoc): Post {
 
 export function usePostsList(): { data: Post[]; loading: boolean; raw: BlogPostDoc[] } {
   const q = usePosts();
+  if (q.isLoading) return { data: [], loading: true, raw: [] };
   const list = q.data && q.data.length > 0 ? q.data.map(postFromDoc) : STATIC_POSTS;
-  return { data: list, loading: q.isLoading, raw: q.data || [] };
+  return { data: list, loading: false, raw: q.data || [] };
 }
 
 export function usePostBySlug(slug: string | undefined): {
