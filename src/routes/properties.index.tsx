@@ -303,7 +303,7 @@ export function PropertyCard({ property: p, onView }: { property: Property; onVi
   const content = (
       <div className="relative aspect-[4/5] overflow-hidden">
         <img
-          src={p.images[0]}
+          src={p.cardImage || p.images[0]}
           alt={p.imageAlts?.[0] || p.name}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-105"
         />

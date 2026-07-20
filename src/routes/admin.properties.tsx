@@ -34,6 +34,7 @@ const empty = (order = 0): Form => ({
   approvals: [],
   reraId: "",
   coverImage: { url: "", publicId: "" },
+  cardImage: { url: "", publicId: "" },
   youtubeUrls: [],
   galleryImages: [],
   status: "ongoing",
@@ -269,7 +270,7 @@ function PropertyEditor({ initial, onClose, onSaved }: { initial: Form; onClose:
             <input value={f.reraId} onChange={(e) => set("reraId", e.target.value)} className={inputCls} />
           </Field>
 
-          <Field label="Cover image" hint="Used on listing cards and detail page hero">
+          <Field label="Detail page cover image" hint="Wide 16:9 image for the property detail hero section. (Also used as fallback for listing cards)">
             <ImageUploader
               folder="swamy/properties"
               value={f.coverImage?.url ? [f.coverImage] : []}
@@ -277,6 +278,17 @@ function PropertyEditor({ initial, onClose, onSaved }: { initial: Form; onClose:
               multiple={false}
               max={1}
               aspectRatio="16:9"
+            />
+          </Field>
+
+          <Field label="Listing card image (Optional)" hint="Portrait 4:5 image used on the properties listing page. Falls back to cover image if empty.">
+            <ImageUploader
+              folder="swamy/properties"
+              value={f.cardImage?.url ? [f.cardImage] : []}
+              onChange={(v) => set("cardImage", v[0] || { url: "", publicId: "" })}
+              multiple={false}
+              max={1}
+              aspectRatio="4:5"
             />
           </Field>
 

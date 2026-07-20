@@ -15,6 +15,7 @@ export type PropertyDoc = {
   approvals: string[];
   reraId: string;
   coverImage: CloudinaryImage;
+  cardImage?: CloudinaryImage;
   youtubeUrls?: string[];
   galleryImages: CloudinaryImage[];
   status: "ongoing" | "completed" | "upcoming";

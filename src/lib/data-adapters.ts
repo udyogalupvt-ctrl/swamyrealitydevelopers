@@ -48,6 +48,7 @@ export function propertyFromDoc(doc: PropertyDoc): Property {
     short: doc.shortDescription,
     overview,
     images: images.length ? images : ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=80"],
+    cardImage: doc.cardImage ? resolveImage(doc.cardImage, 800) : (images[0] || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"),
     imageAlts: imageAlts.length ? imageAlts : [doc.name],
     amenities: doc.amenities || [],
     highlights: doc.highlights || [],

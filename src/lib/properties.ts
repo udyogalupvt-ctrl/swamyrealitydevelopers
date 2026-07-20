@@ -14,6 +14,7 @@ export type Property = {
   images: string[];
   /** Optional alt text for each entry in `images` (parallel array). */
   imageAlts?: string[];
+  cardImage?: string;
   amenities: string[];
   highlights: string[];
   approvals: { rera: string; kauda: boolean; dtcp: boolean };
