@@ -25,18 +25,24 @@ function mapDoc<T>(d: { id: string; data: () => Record<string, unknown> }): T {
 
 // ---------- Properties ----------
 export async function listPublishedProperties(): Promise<PropertyDoc[]> {
-  const q = query(
-    collection(db, "properties"),
-    where("isPublished", "==", true),
-    orderBy("displayOrder", "asc")
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => mapDoc<PropertyDoc>(d));
+  try {
+    const q = query(
+      collection(db, "properties"),
+      where("isPublished", "==", true),
+      orderBy("displayOrder", "asc")
+    );
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => mapDoc<PropertyDoc>(d));
+  } catch {
+    const snap = await getDocs(collection(db, "properties"));
+    return snap.docs
+      .map((d) => mapDoc<PropertyDoc>(d))
+      .filter((p) => p.isPublished)
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+  }
 }
 
 export async function listFeaturedProperties(max = 6): Promise<PropertyDoc[]> {
-  // Firestore composite: isPublished==true & isFeatured==true, ordered by displayOrder.
-  // Falls back to client-side filter if the composite index is missing.
   try {
     const q = query(
       collection(db, "properties"),
