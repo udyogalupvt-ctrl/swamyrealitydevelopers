@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 
-export type AspectPreset = "free" | "1:1" | "4:3" | "3:4" | "4:5" | "16:9" | "3:2";
+export type AspectPreset = "free" | "1:1" | "4:3" | "3:4" | "4:5" | "16:9" | "9:16" | "3:2";
 
 const PRESETS: { key: AspectPreset; label: string; value: number | undefined }[] = [
-  { key: "free", label: "Free", value: undefined },
+  { key: "free", label: "Original", value: undefined },
   { key: "16:9", label: "16:9", value: 16 / 9 },
+  { key: "9:16", label: "9:16", value: 9 / 16 },
   { key: "4:3", label: "4:3", value: 4 / 3 },
   { key: "1:1", label: "1:1", value: 1 },
   { key: "3:4", label: "3:4", value: 3 / 4 },
